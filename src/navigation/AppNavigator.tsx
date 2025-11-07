@@ -8,17 +8,23 @@ import ComposeScreen from '../screens/ComposeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 // Resources merged into Profile
 import ReportScreen from '../screens/ReportScreen';
+import WellnessScreen from '../screens/WellnessScreen';
+import AssessmentScreen from '../screens/AssessmentScreen';
+import SuggestionDetailScreen from '../screens/SuggestionDetailScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MainScreen from '../screens/MainScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   Main: undefined;
+  Assessment: undefined;
   Feed: undefined;
   Question: { id: string } | undefined;
   Compose: { mode: 'question' | 'answer'; questionId?: string } | undefined;
   Profile: { userId?: string } | undefined;
   Report: { targetType: 'question' | 'answer' | 'comment'; targetId: string } | undefined;
+  Wellness: { cancerType?: string; stage?: string; age?: string } | undefined;
+  SuggestionDetail: { title: string; content: string; image?: string };
 };
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
@@ -37,11 +43,14 @@ const AppNavigator: React.FC<Props> = ({ isAuthenticated }) => {
         ) : (
           <>
             <Stack.Screen name="Main" component={MainScreen} />
+            <Stack.Screen name="Assessment" component={AssessmentScreen} />
             <Stack.Screen name="Feed" component={FeedScreen} />
             <Stack.Screen name="Question" component={QuestionScreen} />
             <Stack.Screen name="Compose" component={ComposeScreen} />
             <Stack.Screen name="Report" component={ReportScreen} />
             <Stack.Screen name="Profile" component={ProfileScreen} />
+            <Stack.Screen name="Wellness" component={WellnessScreen} />
+            <Stack.Screen name="SuggestionDetail" component={SuggestionDetailScreen} />
           </>
         )}
       </Stack.Navigator>

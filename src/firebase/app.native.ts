@@ -15,14 +15,14 @@ let storage: FirebaseStorage | null = null;
 if (isConfigured) {
   app = getApps().length ? getApps()[0] : initializeApp(firebaseConfig);
   try {
-    auth = getAuth(app);
-  } catch (e) {
-    // Use react-native persistence only on native platforms
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
-    const { getReactNativePersistence } = require('firebase/auth/react-native');
+    // Prefer initializing Auth with React Native persistence on native platforms
+    const { getReactNativePersistence } = require('firebase/auth');
     auth = initializeAuth(app, {
       persistence: getReactNativePersistence(AsyncStorage),
     });
+  } catch (e) {
+    // If Auth was already initialized (e.g., fast refresh), fall back to retrieving it
+    auth = getAuth(app);
   }
   db = getFirestore(app);
   storage = getStorage(app);
