@@ -205,7 +205,7 @@ const ChatScreen: React.FC<Props> = ({ navigation }) => {
             <Text style={styles.backButtonText}>←</Text>
           </TouchableOpacity>
           <View style={styles.headerCenter}>
-            <Text style={styles.headerTitle}>AI Assistant</Text>
+            <Text style={styles.headerTitle}>AI Assistant🤖 : ADD CHAT HISTORY!!</Text>
             <Text style={styles.headerSubtitle}>Cancer Awareness Support</Text>
           </View>
           <View style={{ width: scaleFontSize(28) }} />
