@@ -43,3 +43,8 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
+# markdown files
+MARKDOWN_FORMATTING_EXAMPLES.md
+GEMINI_AI_SETUP.md
+INSTALL_PACKAGE.md
