@@ -13,12 +13,14 @@ import AssessmentScreen from '../screens/AssessmentScreen';
 import SuggestionDetailScreen from '../screens/SuggestionDetailScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MainScreen from '../screens/MainScreen';
+import ChatScreen from '../screens/ChatScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   Main: undefined;
   Assessment: undefined;
   Feed: undefined;
+  Chat: undefined;
   Question: { id: string } | undefined;
   Compose: { mode: 'question' | 'answer'; questionId?: string } | undefined;
   Profile: { userId?: string } | undefined;
@@ -45,6 +47,7 @@ const AppNavigator: React.FC<Props> = ({ isAuthenticated }) => {
             <Stack.Screen name="Main" component={MainScreen} />
             <Stack.Screen name="Assessment" component={AssessmentScreen} />
             <Stack.Screen name="Feed" component={FeedScreen} />
+            <Stack.Screen name="Chat" component={ChatScreen} />
             <Stack.Screen name="Question" component={QuestionScreen} />
             <Stack.Screen name="Compose" component={ComposeScreen} />
             <Stack.Screen name="Report" component={ReportScreen} />

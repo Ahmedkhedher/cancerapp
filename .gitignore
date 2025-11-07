@@ -30,8 +30,20 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# documentation markdown files (internal guides)
+MARKDOWN_FORMATTING_EXAMPLES.md
+GEMINI_AI_SETUP.md
+INSTALL_PACKAGE.md
+
+# Keep README.md tracked - it's the main project documentation
+!README.md
+
 # local env files
 .env*.local
+.env
+
+# API keys (IMPORTANT: Never commit API keys!)
+# If you have API keys in code files, move them to .env
 
 # typescript
 *.tsbuildinfo
@@ -39,3 +51,4 @@ yarn-error.*
 # generated native folders
 /ios
 /android
+
