@@ -1,11 +1,12 @@
 import React, { useCallback, useEffect, useState } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, TextInput, ImageBackground } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, Alert, TextInput, ImageBackground, Animated } from 'react-native';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../navigation/AppNavigator';
 import { useAuth } from '../context/AuthContext';
 import { getQuestions, toggleFollow, upvoteQuestionOnce, Question, seedSampleData, getAnswersFor, Answer, addAnswer, addQuestion } from '../data/store';
 import { ButtonPrimary, ButtonSecondary, Card, Tag, MetaText } from '../ui/components';
 import { theme } from '../ui/theme';
+import { isSmartwatch, scaleFontSize } from '../ui/responsive';
 
 type Props = NativeStackScreenProps<RootStackParamList, 'Feed'>;
 
@@ -126,17 +127,19 @@ const FeedScreen: React.FC<Props> = ({ navigation }) => {
   };
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
-        <View style={styles.brandRow}>
-          <Text style={styles.brandText}>LifeWeaver</Text>
+      {!isSmartwatch && (
+        <View style={styles.header}>
+          <View style={styles.brandRow}>
+            <Text style={styles.brandText}>LifeWeaver</Text>
+          </View>
+          <View style={styles.headerCenter}><Text style={styles.headerTitle}>Home</Text></View>
+          <View style={styles.headerActions}>
+            <ButtonSecondary title="Seed" onPress={async () => { await seedSampleData(); await onRefresh(); }} size="sm" />
+            <View style={{ width: theme.spacing(1) }} />
+            <ButtonPrimary title="Ask" onPress={() => navigation.navigate('Compose', { mode: 'question' })} size="sm" />
+          </View>
         </View>
-        <View style={styles.headerCenter}><Text style={styles.headerTitle}>Home</Text></View>
-        <View style={styles.headerActions}>
-          <ButtonSecondary title="Seed" onPress={async () => { await seedSampleData(); await onRefresh(); }} />
-          <View style={{ width: theme.spacing(1) }} />
-          <ButtonPrimary title="Ask" onPress={() => navigation.navigate('Compose', { mode: 'question' })} />
-        </View>
-      </View>
+      )}
       <FlatList
         data={filtered}
         keyExtractor={(item) => item.id}
@@ -145,23 +148,35 @@ const FeedScreen: React.FC<Props> = ({ navigation }) => {
         keyboardShouldPersistTaps="handled"
         ListHeaderComponent={
           <View>
-            <View style={styles.heroWrap}>
-              <ImageBackground
-                source={{ uri: 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=1600&auto=format&fit=crop' }}
-                style={styles.hero}
-                imageStyle={{ borderRadius: theme.radius.lg }}
-              >
-                <View style={styles.heroOverlay}>
-                  <View style={styles.heroTopRow}>
-                    <TouchableOpacity onPress={() => navigation.navigate('Main')} style={styles.backBadge}><Text style={styles.backBadgeText}>←</Text></TouchableOpacity>
-                    <View style={{ flex: 1 }} />
-                    <View style={styles.brandRow}><View style={styles.brandLogo}><Text style={styles.brandLogoText}>LW</Text></View><Text style={styles.brandWord}>LifeWeaver</Text></View>
+            {!isSmartwatch ? (
+              <View style={styles.heroWrap}>
+                <ImageBackground
+                  source={{ uri: 'https://images.unsplash.com/photo-1512428559087-560fa5ceab42?q=80&w=1600&auto=format&fit=crop' }}
+                  style={styles.hero}
+                  imageStyle={{ borderRadius: theme.radius.lg }}
+                >
+                  <View style={styles.heroOverlay}>
+                    <View style={styles.heroTopRow}>
+                      <TouchableOpacity onPress={() => navigation.navigate('Main')} style={styles.backBadge}><Text style={styles.backBadgeText}>←</Text></TouchableOpacity>
+                      <View style={{ flex: 1 }} />
+                      <View style={styles.brandRow}><View style={styles.brandLogo}><Text style={styles.brandLogoText}>LW</Text></View><Text style={styles.brandWord}>LifeWeaver</Text></View>
+                    </View>
+                    <Text style={styles.heroTitle}>Explore Q&A</Text>
+                    <Text style={styles.heroSubtitle}>Ask questions and find answers</Text>
                   </View>
-                  <Text style={styles.heroTitle}>Explore Q&A</Text>
-                  <Text style={styles.heroSubtitle}>Ask questions and find answers</Text>
-                </View>
-              </ImageBackground>
-            </View>
+                </ImageBackground>
+              </View>
+            ) : (
+              <View style={styles.compactHeader}>
+                <TouchableOpacity onPress={() => navigation.navigate('Main')} style={styles.backBadge}>
+                  <Text style={styles.backBadgeText}>←</Text>
+                </TouchableOpacity>
+                <Text style={styles.compactTitle}>Q&A Feed</Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Compose', { mode: 'question' })} style={styles.askBadge}>
+                  <Text style={styles.askBadgeText}>+</Text>
+                </TouchableOpacity>
+              </View>
+            )}
             <View style={{ height: theme.spacing(1) }} />
             <View style={styles.searchBox}>
               <TextInput
@@ -172,16 +187,18 @@ const FeedScreen: React.FC<Props> = ({ navigation }) => {
                 style={styles.searchInput}
               />
             </View>
-            <View style={styles.askBox}>
-              <TextInput
-                placeholder="Ask a question…"
-                placeholderTextColor={theme.colors.subtext}
-                value={askText}
-                onChangeText={setAskText}
-                style={styles.askInput}
-              />
-              <ButtonPrimary title="Post" onPress={submitQuestion} />
-            </View>
+            {!isSmartwatch && (
+              <View style={styles.askBox}>
+                <TextInput
+                  placeholder="Ask a question…"
+                  placeholderTextColor={theme.colors.subtext}
+                  value={askText}
+                  onChangeText={setAskText}
+                  style={styles.askInput}
+                />
+                <ButtonPrimary title="Post" onPress={submitQuestion} size="sm" />
+              </View>
+            )}
             <View style={styles.pillsRow}>
               <TouchableOpacity onPress={() => setFilter('most')}><View style={[styles.pill, filter==='most' && styles.pillActive]}><Text style={[styles.pillText, filter==='most' && styles.pillTextActive]}>Most Viewed</Text></View></TouchableOpacity>
               <TouchableOpacity onPress={() => setFilter('nearby')}><View style={[styles.pill, filter==='nearby' && styles.pillActive]}><Text style={[styles.pillText, filter==='nearby' && styles.pillTextActive]}>Nearby</Text></View></TouchableOpacity>
@@ -209,13 +226,22 @@ const FeedScreen: React.FC<Props> = ({ navigation }) => {
                 </View>
               </TouchableOpacity>
               <View style={styles.actions}>
-                <ButtonSecondary title={`Upvote (${item.upvotes})`} onPress={() => onUpvote(item.id)} />
-                <View style={{ width: theme.spacing(1) }} />
-                <ButtonSecondary title={item.following ? 'Following' : 'Follow'} onPress={() => onFollow(item.id)} />
-                <View style={{ width: theme.spacing(1) }} />
-                <ButtonPrimary title="Answer" onPress={() => { if (!expanded[item.id]) toggleExpand(item.id); }} />
-                <View style={{ width: theme.spacing(1) }} />
-                <ButtonSecondary title={expanded[item.id] ? 'Hide' : 'Open'} onPress={() => toggleExpand(item.id)} />
+                {isSmartwatch ? (
+                  <>
+                    <ButtonPrimary title={`👍 ${item.upvotes}`} onPress={() => onUpvote(item.id)} size="sm" style={styles.actionBtnWatch} />
+                    <ButtonSecondary title={expanded[item.id] ? '▼' : '▶'} onPress={() => toggleExpand(item.id)} size="sm" style={styles.actionBtnWatch} />
+                  </>
+                ) : (
+                  <>
+                    <ButtonSecondary title={`Upvote (${item.upvotes})`} onPress={() => onUpvote(item.id)} size="sm" />
+                    <View style={{ width: theme.spacing(1) }} />
+                    <ButtonSecondary title={item.following ? 'Following' : 'Follow'} onPress={() => onFollow(item.id)} size="sm" />
+                    <View style={{ width: theme.spacing(1) }} />
+                    <ButtonPrimary title="Answer" onPress={() => { if (!expanded[item.id]) toggleExpand(item.id); }} size="sm" />
+                    <View style={{ width: theme.spacing(1) }} />
+                    <ButtonSecondary title={expanded[item.id] ? 'Hide' : 'Open'} onPress={() => toggleExpand(item.id)} size="sm" />
+                  </>
+                )}
               </View>
               {expanded[item.id] && (
                 <View style={styles.expandArea}>
@@ -258,10 +284,21 @@ const FeedScreen: React.FC<Props> = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.bg },
-  header: { padding: theme.spacing(2), flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center' },
+  header: { 
+    padding: theme.spacing(2), 
+    flexDirection: 'row', 
+    justifyContent: 'space-between', 
+    alignItems: 'center',
+    ...theme.shadows.sm,
+    backgroundColor: theme.colors.card,
+    borderBottomWidth: 1,
+    borderColor: theme.colors.border,
+  },
   headerActions: { flexDirection: 'row' },
   title: { ...theme.typography.title as any },
-  card: { },
+  card: { 
+    ...theme.shadows.sm,
+  },
   cardTitle: { ...theme.typography.h2 as any },
   cardExcerpt: { marginTop: 6, color: theme.colors.text },
   metaRow: { flexDirection: 'row', alignItems: 'center', marginTop: 8 },
@@ -280,9 +317,17 @@ const styles = StyleSheet.create({
   pillText: { color: theme.colors.text },
   pillTextActive: { color: theme.colors.primaryText, fontWeight: '700' },
   imageWrap: { borderRadius: theme.radius.lg, overflow: 'hidden' },
-  cardImage: { height: 180, justifyContent: 'flex-end' },
+  cardImage: { 
+    height: isSmartwatch ? 100 : 180, 
+    justifyContent: 'flex-end',
+  },
   imageOverlay: { backgroundColor: 'rgba(0,0,0,0.35)', padding: theme.spacing(2) },
-  imageTitle: { color: '#fff', fontSize: 16, fontWeight: '700', marginBottom: 4 },
+  imageTitle: { 
+    color: '#fff', 
+    fontSize: scaleFontSize(isSmartwatch ? 12 : 16), 
+    fontWeight: '700', 
+    marginBottom: 4,
+  },
   expandArea: { marginTop: theme.spacing(1) },
   answerRow: { paddingVertical: 8, borderTopWidth: 1, borderColor: theme.colors.border },
   answerAuthor: { fontWeight: '600', color: theme.colors.text, marginBottom: 4 },
@@ -302,14 +347,56 @@ const styles = StyleSheet.create({
   backBadge: { width: 28, height: 28, borderRadius: 14, backgroundColor: theme.colors.card, alignItems: 'center', justifyContent: 'center' },
   backBadgeText: { color: theme.colors.text, fontWeight: '800' },
   brandWord: { color: '#fff', fontWeight: '700', marginLeft: 6 },
-  heroTitle: { color: '#fff', fontSize: 20, fontWeight: '800' },
+  heroTitle: { 
+    color: '#fff', 
+    fontSize: scaleFontSize(20), 
+    fontWeight: '800',
+  },
   heroSubtitle: { color: '#E5E7EB', marginTop: 4 },
   // Ask composer at top
   askBox: { marginTop: theme.spacing(1), backgroundColor: theme.colors.card, borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radius.md, padding: theme.spacing(1), flexDirection: 'row', alignItems: 'center' },
   askInput: { flex: 1, marginRight: theme.spacing(1), color: theme.colors.text },
   // Inline answer composer
   inlineAnswerBox: { marginTop: theme.spacing(1), backgroundColor: theme.colors.card, borderWidth: 1, borderColor: theme.colors.border, borderRadius: theme.radius.md, padding: theme.spacing(1) },
-  inlineAnswerInput: { minHeight: 60, color: theme.colors.text },
+  inlineAnswerInput: { 
+    minHeight: isSmartwatch ? 40 : 60, 
+    color: theme.colors.text,
+  },
+  // Smartwatch specific styles
+  compactHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    paddingVertical: theme.spacing(1),
+    paddingHorizontal: theme.spacing(0.5),
+    backgroundColor: theme.colors.card,
+    borderRadius: theme.radius.md,
+    marginBottom: theme.spacing(1),
+  },
+  compactTitle: {
+    fontSize: scaleFontSize(12),
+    fontWeight: '700',
+    color: theme.colors.text,
+    flex: 1,
+    textAlign: 'center',
+  },
+  askBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: theme.colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  askBadgeText: {
+    color: theme.colors.primaryText,
+    fontSize: scaleFontSize(16),
+    fontWeight: '800',
+  },
+  actionBtnWatch: {
+    flex: 1,
+    marginHorizontal: 2,
+  },
 });
 
 export default FeedScreen;
