@@ -91,6 +91,15 @@ const ProfileScreen: React.FC<any> = ({ navigation }) => {
                   style={styles.actionBtn}
                 />
               </Card>
+
+              <Text style={styles.section}>📁 File Storage</Text>
+              <Card elevated>
+                <ButtonPrimary 
+                  title="📤 Upload Files to MinIO" 
+                  onPress={() => navigation.navigate('FileUpload')} 
+                  style={styles.actionBtn}
+                />
+              </Card>
               
               <Text style={styles.section}>⚙️ Settings</Text>
               <Card elevated>

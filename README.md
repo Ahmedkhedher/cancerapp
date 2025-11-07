@@ -32,7 +32,16 @@ cancerapp/
 │   ├── data/              # Firebase configuration and store
 │   ├── navigation/        # Navigation setup
 │   ├── screens/           # App screens
-│   │   ├── ChatScreen.tsx       # AI chat interface
+│   │   ├── ChatScreen.tsx    ## ✨ Features
+│   │   │   - 🤖 **AI Chat Assistant** - Powered by Google Gemini AI with markdown formatting
+│   │   │   - 📝 **Q&A Community** - Ask and answer cancer-related questions
+│   │   │   - 🔐 **Authentication** - Email/password and Google sign-in via Firebase
+│   │   │   - 📁 **File Storage** - Upload images and documents to MinIO object storage
+│   │   │   - 📱 **Responsive Design** - Optimized for mobile phones, tablets, and smartwatches
+│   │   │   - 🎨 **Modern UI** - Beautiful, animated components with dark mode support
+│   │   │   - 🔔 **Real-time Updates** - Firebase Firestore integration
+│   │   │   - 📊 **User Profiles** - Track questions, answers, and activity
+│   │   │   - 🌐 **Resources** - Curated links to trusted cancer awareness organizations
 │   │   ├── FeedScreen.tsx       # Q&A feed
 │   │   ├── LoginScreen.tsx      # Authentication
 │   │   ├── MainScreen.tsx       # Landing page

@@ -11,12 +11,14 @@ import ReportScreen from '../screens/ReportScreen';
 import LoginScreen from '../screens/LoginScreen';
 import MainScreen from '../screens/MainScreen';
 import ChatScreen from '../screens/ChatScreen';
+import FileUploadScreen from '../screens/FileUploadScreen';
 
 export type RootStackParamList = {
   Login: undefined;
   Main: undefined;
   Feed: undefined;
   Chat: undefined;
+  FileUpload: undefined;
   Question: { id: string } | undefined;
   Compose: { mode: 'question' | 'answer'; questionId?: string } | undefined;
   Profile: { userId?: string } | undefined;
@@ -41,6 +43,7 @@ const AppNavigator: React.FC<Props> = ({ isAuthenticated }) => {
             <Stack.Screen name="Main" component={MainScreen} />
             <Stack.Screen name="Feed" component={FeedScreen} />
             <Stack.Screen name="Chat" component={ChatScreen} />
+            <Stack.Screen name="FileUpload" component={FileUploadScreen} />
             <Stack.Screen name="Question" component={QuestionScreen} />
             <Stack.Screen name="Compose" component={ComposeScreen} />
             <Stack.Screen name="Report" component={ReportScreen} />
