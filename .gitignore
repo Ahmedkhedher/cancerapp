@@ -30,6 +30,14 @@ yarn-error.*
 .DS_Store
 *.pem
 
+# documentation markdown files (internal guides)
+MARKDOWN_FORMATTING_EXAMPLES.md
+GEMINI_AI_SETUP.md
+INSTALL_PACKAGE.md
+
+# Keep README.md tracked - it's the main project documentation
+!README.md
+
 # local env files
 .env*.local
 .env
@@ -44,7 +52,3 @@ yarn-error.*
 /ios
 /android
 
-# markdown files
-MARKDOWN_FORMATTING_EXAMPLES.md
-GEMINI_AI_SETUP.md
-INSTALL_PACKAGE.md
